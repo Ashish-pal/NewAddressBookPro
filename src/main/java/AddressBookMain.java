@@ -8,14 +8,17 @@ public class AddressBookMain {
     public static void main(String[] args) {
         System.out.println("Welcome to Address Book Program");
         boolean flag = true;
-        while (flag) {
-            System.out.println("\nSelect an option:\n1. Add Contact\n2. Exit");
+        while(flag) {
+            System.out.println("\nSelect an option:\n1. Add Contact\n2. Edit Contact\n3. Exit");
             int option = scanner.nextInt();
-            switch (option) {
+            switch(option) {
                 case 1:
                     addContact();
                     break;
                 case 2:
+                    editContact();
+                    break;
+                case 3:
                     flag = false;
                     break;
                 default:
@@ -46,5 +49,41 @@ public class AddressBookMain {
         Contact newContact = new Contact(firstName, lastName, address, city, state, zip, phoneNumber, email);
         addressBook.add(newContact);
         System.out.println("Contact Added Successfully.");
+    }
+
+    private static void editContact() {
+        System.out.println("Enter First Name of the contact you want to edit: ");
+        String firstName = scanner.next();
+        System.out.println("Enter Last Name of the contact you want to edit: ");
+        String lastName = scanner.next();
+        boolean found = false;
+        for(Contact contact : addressBook) {
+            if(contact.getFirstName().equals(firstName) && contact.getLastName().equals(lastName)) {
+                System.out.println("Enter new Address: ");
+                String address = scanner.next();
+                System.out.println("Enter new City: ");
+                String city = scanner.next();
+                System.out.println("Enter new State: ");
+                String state = scanner.next();
+                System.out.println("Enter new Zip: ");
+                int zip = scanner.nextInt();
+                System.out.println("Enter new Phone Number: ");
+                long phoneNumber = scanner.nextLong();
+                System.out.println("Enter new Email: ");
+                String email = scanner.next();
+                contact.setAddress(address);
+                contact.setCity(city);
+                contact.setState(state);
+                contact.setZip(zip);
+                contact.setPhoneNumber(phoneNumber);
+                contact.setEmail(email);
+                found = true;
+                System.out.println("Contact Edited Successfully.");
+                break;
+            }
+        }
+        if(!found) {
+            System.out.println("Contact not found.");
+        }
     }
 }
