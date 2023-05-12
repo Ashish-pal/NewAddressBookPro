@@ -3,17 +3,6 @@ public class Contact {
     private int zip;
     private long phoneNumber;
 
-//    public void Contacts(String firstName, String lastName, String address, String city, String state, String email, int zip, long phoneNumber) {
-//        this.firstName = firstName;
-//        this.lastName = lastName;
-//        this.address = address;
-//        this.city = city;
-//        this.state = state;
-//        this.email = email;
-//        this.zip = zip;
-//        this.phoneNumber = phoneNumber;
-//    }
-
     public Contact(String firstName, String lastName, String address, String city, String state, int zip, long phoneNumber, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -89,6 +78,10 @@ public class Contact {
         this.phoneNumber = phoneNumber;
     }
 
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
     @Override
     public String toString() {
         return "Contact{" +
@@ -101,5 +94,23 @@ public class Contact {
                 ", zip=" + zip +
                 ", phoneNumber=" + phoneNumber +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Contact other = (Contact) obj;
+        if (!this.firstName.equalsIgnoreCase(other.firstName)) {
+            return false;
+        }
+        if (!this.lastName.equalsIgnoreCase(other.lastName)) {
+            return false;
+        }
+        return true;
     }
 }
