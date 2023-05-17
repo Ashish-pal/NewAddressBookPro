@@ -1,5 +1,5 @@
-import java.util.HashMap;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class AddressBookMain {
     static Scanner scanner = new Scanner(System.in);
@@ -42,6 +42,21 @@ public class AddressBookMain {
             AddressBook addressBook = new AddressBook(name);
             addressBooks.put(name, addressBook);
             System.out.println("\nThe address book " + name + " has been added to the system.");
+            createAddressBookFile(name);
+        }
+    }
+
+    private static void createAddressBookFile(String fileName) {
+        try {
+            File file = new File(fileName + ".txt");
+            if (file.createNewFile()) {
+                System.out.println("File created: " + file.getName());
+            } else {
+                System.out.println("File already exists.");
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred while creating the file.");
+            e.printStackTrace();
         }
     }
 
@@ -55,9 +70,26 @@ public class AddressBookMain {
             if (addressBooks.containsKey(name)) {
                 AddressBook addressBook = addressBooks.get(name);
                 addressBook.run();
+                saveAddressBookToFile(name);
             } else {
                 System.out.println("\nThe address book " + name + " does not exist.");
             }
+        }
+    }
+
+    private static void saveAddressBookToFile(String fileName) {
+        try {
+            FileWriter fileWriter = new FileWriter(fileName + ".txt");
+            AddressBook addressBook = addressBooks.get(fileName);
+            ArrayList<Contact> contacts = addressBook.getContactAddress();
+            for (Contact contact : contacts) {
+                fileWriter.write(contact.toString() + "\n");
+            }
+            fileWriter.close();
+            System.out.println("Address book saved to file.");
+        } catch (IOException e) {
+            System.out.println("An error occurred while saving the address book to file.");
+            e.printStackTrace();
         }
     }
 }

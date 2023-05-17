@@ -1,16 +1,47 @@
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.stream.Collectors;
+import java.io.*;
+import java.util.*;
 
 public class AddressBook {
     private String name;
     private static ArrayList<Contact> contactAddress = new ArrayList<>();
-    private static Scanner scanner = new Scanner(System.in);
+    private static Scanner scanner;
 
     public AddressBook(String name) {
         this.name = name;
+        this.contactAddress = new ArrayList<>();
+        this.scanner = new Scanner(System.in);
+        readAddressBookFromFile(name);
+    }
+
+    private void readAddressBookFromFile(String fileName) {
+        try {
+            File file = new File(fileName + ".txt");
+            Scanner fileReader = new Scanner(file);
+            while (fileReader.hasNextLine()) {
+                String line = fileReader.nextLine();
+                String[] data = line.split(",");
+                if (data.length == 8) {
+                    String firstName = data[0];
+                    String lastName = data[1];
+                    String address = data[2];
+                    String city = data[3];
+                    String state = data[4];
+                    int zip = Integer.parseInt(data[5]);
+                    long phoneNumber = Long.parseLong(data[6]);
+                    String email = data[7];
+                    Contact contact = new Contact(firstName, lastName, address, city, state, zip, phoneNumber, email);
+                    contactAddress.add(contact);
+                }
+            }
+            fileReader.close();
+            System.out.println("Address book loaded from file.");
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found. Starting with an empty address book.");
+        }
+    }
+
+    public ArrayList<Contact> getContactAddress() {
+        return contactAddress;
     }
 
     public void run() {
@@ -44,10 +75,10 @@ public class AddressBook {
                     getCountByCity();
                     break;
                 case 9:
-                    getCountByState();
+                    sortByCity();
                     break;
                 case 10:
-                    sortByCity();
+                    sortByState();
                     break;
                 case 11:
                     flag = false;
@@ -180,7 +211,6 @@ public class AddressBook {
         }
         System.out.println("Total unique cities are: " + count);
     }
-
 
     private static void getCountByState() {
         HashSet<String> states = new HashSet<>();
