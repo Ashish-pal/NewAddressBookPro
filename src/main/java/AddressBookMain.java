@@ -1,3 +1,4 @@
+import com.opencsv.CSVWriter;
 import java.io.*;
 import java.util.*;
 
@@ -48,17 +49,15 @@ public class AddressBookMain {
 
     private static void createAddressBookFile(String fileName) {
         try {
-            File file = new File(fileName + ".txt");
-            if (file.createNewFile()) {
-                System.out.println("File created: " + file.getName());
-            } else {
-                System.out.println("File already exists.");
-            }
+            CSVWriter writer = new CSVWriter(new FileWriter(fileName + ".csv"));
+            writer.close();
+            System.out.println("File created: " + fileName + ".csv");
         } catch (IOException e) {
             System.out.println("An error occurred while creating the file.");
             e.printStackTrace();
         }
     }
+
 
     private static void selectAddressBook() {
         if (addressBooks.size() == 0) {
@@ -79,17 +78,28 @@ public class AddressBookMain {
 
     private static void saveAddressBookToFile(String fileName) {
         try {
-            FileWriter fileWriter = new FileWriter(fileName + ".txt");
+            FileWriter fileWriter = new FileWriter(fileName + ".csv");
+            CSVWriter writer = new CSVWriter(fileWriter);
             AddressBook addressBook = addressBooks.get(fileName);
             ArrayList<Contact> contacts = addressBook.getContactAddress();
             for (Contact contact : contacts) {
-                fileWriter.write(contact.toString() + "\n");
+                String[] data = new String[8];
+                data[0] = contact.getFirstName();
+                data[1] = contact.getLastName();
+                data[2] = contact.getAddress();
+                data[3] = contact.getCity();
+                data[4] = contact.getState();
+                data[5] = String.valueOf(contact.getZip());
+                data[6] = String.valueOf(contact.getPhoneNumber());
+                data[7] = contact.getEmail();
+                writer.writeNext(data);
             }
-            fileWriter.close();
+            writer.close();
             System.out.println("Address book saved to file.");
         } catch (IOException e) {
             System.out.println("An error occurred while saving the address book to file.");
             e.printStackTrace();
         }
     }
+
 }

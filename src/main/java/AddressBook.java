@@ -1,3 +1,5 @@
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
 import java.io.*;
 import java.util.*;
 
@@ -15,28 +17,30 @@ public class AddressBook {
 
     private void readAddressBookFromFile(String fileName) {
         try {
-            File file = new File(fileName + ".txt");
-            Scanner fileReader = new Scanner(file);
-            while (fileReader.hasNextLine()) {
-                String line = fileReader.nextLine();
-                String[] data = line.split(",");
-                if (data.length == 8) {
-                    String firstName = data[0];
-                    String lastName = data[1];
-                    String address = data[2];
-                    String city = data[3];
-                    String state = data[4];
-                    int zip = Integer.parseInt(data[5]);
-                    long phoneNumber = Long.parseLong(data[6]);
-                    String email = data[7];
+            FileReader fileReader = new FileReader(fileName + ".csv");
+            CSVReader csvReader = new CSVReader(fileReader);
+            String[] line;
+            while ((line = csvReader.readNext()) != null) {
+                if (line.length == 8) {
+                    String firstName = line[0];
+                    String lastName = line[1];
+                    String address = line[2];
+                    String city = line[3];
+                    String state = line[4];
+                    int zip = Integer.parseInt(line[5]);
+                    long phoneNumber = Long.parseLong(line[6]);
+                    String email = line[7];
                     Contact contact = new Contact(firstName, lastName, address, city, state, zip, phoneNumber, email);
                     contactAddress.add(contact);
                 }
             }
-            fileReader.close();
+            csvReader.close();
             System.out.println("Address book loaded from file.");
         } catch (FileNotFoundException e) {
             System.out.println("File not found. Starting with an empty address book.");
+        } catch (IOException | CsvValidationException e) {
+            System.out.println("An error occurred while reading the file.");
+            e.printStackTrace();
         }
     }
 
