@@ -1,6 +1,8 @@
-import com.opencsv.CSVWriter;
 import java.io.*;
 import java.util.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 
 public class AddressBookMain {
     static Scanner scanner = new Scanner(System.in);
@@ -49,15 +51,17 @@ public class AddressBookMain {
 
     private static void createAddressBookFile(String fileName) {
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter(fileName + ".csv"));
-            writer.close();
-            System.out.println("File created: " + fileName + ".csv");
+            File file = new File(fileName + ".json");
+            if (file.createNewFile()) {
+                System.out.println("File created: " + fileName + ".json");
+            } else {
+                System.out.println("File already exists: " + fileName + ".json");
+            }
         } catch (IOException e) {
             System.out.println("An error occurred while creating the file.");
             e.printStackTrace();
         }
     }
-
 
     private static void selectAddressBook() {
         if (addressBooks.size() == 0) {
@@ -78,28 +82,20 @@ public class AddressBookMain {
 
     private static void saveAddressBookToFile(String fileName) {
         try {
-            FileWriter fileWriter = new FileWriter(fileName + ".csv");
-            CSVWriter writer = new CSVWriter(fileWriter);
             AddressBook addressBook = addressBooks.get(fileName);
             ArrayList<Contact> contacts = addressBook.getContactAddress();
-            for (Contact contact : contacts) {
-                String[] data = new String[8];
-                data[0] = contact.getFirstName();
-                data[1] = contact.getLastName();
-                data[2] = contact.getAddress();
-                data[3] = contact.getCity();
-                data[4] = contact.getState();
-                data[5] = String.valueOf(contact.getZip());
-                data[6] = String.valueOf(contact.getPhoneNumber());
-                data[7] = contact.getEmail();
-                writer.writeNext(data);
-            }
-            writer.close();
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String json = gson.toJson(contacts);
+
+            FileWriter fileWriter = new FileWriter(fileName + ".json");
+            fileWriter.write(json);
+            fileWriter.close();
+
             System.out.println("Address book saved to file.");
         } catch (IOException e) {
             System.out.println("An error occurred while saving the address book to file.");
             e.printStackTrace();
         }
     }
-
 }
